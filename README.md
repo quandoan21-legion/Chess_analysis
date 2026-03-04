@@ -1,164 +1,59 @@
-# Chess Improvement App
+# Automated Chess Game Analyzer
 
-AI-powered chess analysis platform that analyzes your Chess.com games and provides personalized improvement recommendations with user authentication.
+Welcome to the Chess Game Analyzer project! This repository contains over 3800 chess games collected from chess.com and analyzed using various techniques. The results of the analysis are presented in a Streamlit web application for easy exploration and visualization.
+
+## Overview
+
+Chess is a game of strategy and tactics, and analyzing games played by skilled players can provide valuable insights into different opening strategies, tactical patterns, and endgame techniques. In this project, I have collected a large dataset of chess games from chess.com and performed detailed analysis on them.
+
+[![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://chesscom.streamlit.app/)
 
 ## Features
 
-- **User Authentication**: Secure login and registration with Supabase Auth
-- **Chess.com Integration**: Fetch and analyze your recent games
-- **Stockfish Analysis**: Deep chess engine analysis of every move
-- **Pattern Detection**: Identify recurring weaknesses in your gameplay
-- **Personalized Training**: Get actionable recommendations based on your weaknesses
-- **Game Statistics**: Track your performance across multiple games
-- **Modern UI**: Clean, responsive design with dark theme
+- **Large Dataset**: The dataset consists of over 3800 chess games played by players of varying skill levels.
+- **Analysis**: The games are analyzed using state-of-the-art techniques to extract valuable information such as opening moves, common tactics, and endgame patterns.
+- **Streamlit Web Application**: The results of the analysis are presented in an interactive web application built with Streamlit, allowing users to explore the data easily.
+- **Up-to-date data**: The dataset is updated everyday at midnight through Github Actions.
+- **Analyze your own games**: Conveniently insert your username and get your own analysis.
 
-## Tech Stack
+## How to Use locally
 
-**Frontend**
-- React 18 + TypeScript
-- Vite
-- Tailwind CSS
-- Supabase Client
-- Chess.com Public API
+1. **Clone the Repository**: Clone this repository to your local machine using the following command:
 
-**Backend**
-- Python 3.9+
-- FastAPI
-- python-chess
-- Stockfish engine
-- Supabase Python Client
+    ``` bash
+    git clone https://github.com/GermanPaul12/My-Chess-Com-Games-Analyzed-and-presented-on-Streamlit
+    ```
 
-**Database**
-- Supabase (PostgreSQL)
+2. **Install Dependencies**: Navigate to the project directory and install the required dependencies:
 
-## Quick Start
+    ``` bash
+    cd My-Chess-Com-Games-Analyzed-and-presented-on-Streamlit
+    pip install -r requirements.txt
+    ```
 
-### 1. Install Dependencies
+3. **Change username**: Insert your own username under `/scripts` in the `get_names.py`:
 
-```bash
-npm install
-```
+    - Replace `codinggambit` with your own username
+    - Alternatively you can skip this part completely and use the page *📊Analysis by Username* for that you can proceed with step 4
 
-### 2. Install Python Backend Dependencies
+4. **Run the Web Application**: Start the Streamlit web application by running the following command:
 
-```bash
-pip install -r requirements.txt
-```
+    ``` bash
+    streamlit run 🏠_Home.py
+    ```
 
-### 3. Install Stockfish Engine
+This will launch the web application in your default web browser, allowing you to interactively explore the analyzed chess games.
 
-**macOS:**
-```bash
-brew install stockfish
-```
+## Contributors
 
-**Ubuntu/Debian:**
-```bash
-sudo apt-get install stockfish
-```
-
-**Windows:**
-Download from [stockfishchess.org](https://stockfishchess.org/download/)
-
-### 4. Start the Backend Server
-
-```bash
-python backend/main.py
-```
-
-The backend API will run on `http://localhost:8000`
-
-### 5. Start the Frontend Development Server
-
-In a new terminal:
-
-```bash
-npm run dev
-```
-
-The app will be available at `http://localhost:5173`
-
-## How to Use
-
-1. **Create an Account**: Click "Sign In" and create a new account
-2. **Enter Username**: Enter your Chess.com username
-3. **Select Games**: Choose how many recent games to analyze (1-50)
-4. **Configure Analysis**: Set the Stockfish depth (higher = more accurate but slower)
-5. **Analyze**: Click "Analyze Games" and wait for results
-6. **Review**: View your weaknesses, game statistics, and personalized training plan
-
-## Analysis Features
-
-### Weakness Categories
-
-- **Opening Weakness**: Errors in the first 10 moves
-- **Tactical Blindness**: Missed tactical opportunities (forks, pins, skewers)
-- **Endgame Weakness**: Poor technique in simplified positions
-- **Positional Weakness**: Gradual position deterioration
-- **Time Pressure**: Errors when time is running low
-
-### Move Quality Classification
-
-- **Good Move**: Less than 50 centipawn loss
-- **Inaccuracy**: 50-99 centipawn loss
-- **Mistake**: 100-299 centipawn loss
-- **Blunder**: 300+ centipawn loss
-
-## Project Structure
-
-```
-chess-improvement-app/
-├── src/
-│   ├── components/         # React components
-│   ├── services/          # API services
-│   └── types.ts           # TypeScript types
-├── backend/
-│   ├── main.py            # FastAPI server
-│   ├── analyzer.py        # Stockfish analysis
-│   ├── chess_client.py    # Chess.com API client
-│   ├── weakness_detector.py # Pattern detection
-│   └── supabase_client.py # Database operations
-├── supabase/
-│   └── migrations/        # Database migrations
-└── package.json
-```
-
-## Environment Variables
-
-The `.env` file contains:
-
-```
-VITE_SUPABASE_URL=your_supabase_url
-VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
-SUPABASE_URL=your_supabase_url
-SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
-```
-
-## Building for Production
-
-```bash
-npm run build
-```
-
-The production build will be created in the `dist/` directory.
-
-## Troubleshooting
-
-**Backend won't start:**
-- Ensure Python 3.9+ is installed
-- Check that Stockfish is installed and in your PATH
-- Verify all Python dependencies are installed
-
-**Frontend errors:**
-- Run `npm install` to ensure all dependencies are installed
-- Clear browser cache and reload
-- Check that backend is running on port 8000
-
-**Analysis fails:**
-- Verify the Chess.com username is correct
-- Ensure the user has played games on Chess.com
-- Check backend logs for Stockfish errors
+- [German Paul](https://github.com/GermanPaul12)
 
 ## License
 
-MIT
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Acknowledgments
+
+We would like to thank chess.com for providing access to their API for collecting the chess game data used in this project. Additionally, we acknowledge the contributions of the open-source community, whose tools and libraries have been instrumental in the analysis and visualization of the chess games.
+
+Feel free to explore the repository, contribute improvements, or use the analysis results for your own research or projects. Happy analyzing!
