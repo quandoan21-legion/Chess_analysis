@@ -329,6 +329,12 @@ body {
   cursor: not-allowed;
 }
 
+.input-hint {
+  margin-top: 0.5rem;
+  font-size: 0.875rem;
+  color: #64748b;
+}
+
 .fetch-button {
   width: 100%;
   background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);

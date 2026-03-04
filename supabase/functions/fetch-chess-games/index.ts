@@ -44,7 +44,7 @@ Deno.serve(async (req: Request) => {
   }
 
   try {
-    const { username, year, month } = await req.json();
+    const { username, year, month, limit } = await req.json();
 
     if (!username) {
       return new Response(
@@ -56,7 +56,8 @@ Deno.serve(async (req: Request) => {
       );
     }
 
-    // Initialize Supabase client
+    const gameLimit = limit || 20;
+
     const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
     const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
     const supabase = createClient(supabaseUrl, supabaseKey);
@@ -108,7 +109,6 @@ Deno.serve(async (req: Request) => {
         }
       }
     } else {
-      // Fetch all available archives
       const archivesUrl = `https://api.chess.com/pub/player/${username}/games/archives`;
       const archivesResponse = await fetch(archivesUrl);
 
@@ -119,9 +119,13 @@ Deno.serve(async (req: Request) => {
       const archivesData = await archivesResponse.json();
       const archives = archivesData.archives || [];
 
-      // Process each archive
-      for (const archiveUrl of archives) {
-        // Extract year and month from URL
+      const reversedArchives = archives.reverse();
+
+      for (const archiveUrl of reversedArchives) {
+        if (gamesImported >= gameLimit) {
+          break;
+        }
+
         const urlParts = archiveUrl.split("/");
         const archiveYear = parseInt(urlParts[urlParts.length - 2]);
         const archiveMonth = parseInt(urlParts[urlParts.length - 1]);
@@ -135,7 +139,10 @@ Deno.serve(async (req: Request) => {
         const data: MonthlyArchive = await response.json();
 
         if (data.games && data.games.length > 0) {
-          const gamesToInsert = data.games.map((game) => ({
+          const reversedGames = data.games.reverse();
+          const gamesToImport = reversedGames.slice(0, gameLimit - gamesImported);
+
+          const gamesToInsert = gamesToImport.map((game) => ({
             month: archiveMonth,
             year: archiveYear,
             url: game.url,
@@ -152,7 +159,6 @@ Deno.serve(async (req: Request) => {
             black_username: game.black.username,
           }));
 
-          // Insert in batches of 100
           for (let i = 0; i < gamesToInsert.length; i += 100) {
             const batch = gamesToInsert.slice(i, i + 100);
             const { error } = await supabase.from("chess_games").insert(batch);
@@ -166,7 +172,6 @@ Deno.serve(async (req: Request) => {
           }
         }
 
-        // Rate limiting - wait 100ms between requests
         await new Promise((resolve) => setTimeout(resolve, 100));
       }
     }

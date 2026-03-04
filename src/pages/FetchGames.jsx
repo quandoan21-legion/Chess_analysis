@@ -6,6 +6,7 @@ function FetchGames() {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState(null);
   const [error, setError] = useState(null);
+  const [limit, setLimit] = useState(20);
 
   const handleFetchGames = async (e) => {
     e.preventDefault();
@@ -29,7 +30,7 @@ function FetchGames() {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
         },
-        body: JSON.stringify({ username: username.trim() }),
+        body: JSON.stringify({ username: username.trim(), limit }),
       });
 
       const data = await response.json();
@@ -51,8 +52,8 @@ function FetchGames() {
       <div className="fetch-header">
         <h1 className="page-title">Fetch Chess.com Games</h1>
         <p className="fetch-description">
-          Enter your Chess.com username to import all your games into the database.
-          This may take a few minutes depending on how many games you have played.
+          Enter your Chess.com username to import your recent games into the database.
+          You can import up to your most recent games for analysis.
         </p>
       </div>
 
@@ -70,6 +71,22 @@ function FetchGames() {
           />
         </div>
 
+        <div className="form-group">
+          <label htmlFor="limit">Number of Recent Games</label>
+          <input
+            type="number"
+            id="limit"
+            value={limit}
+            onChange={(e) => setLimit(parseInt(e.target.value) || 20)}
+            min="1"
+            max="500"
+            placeholder="20"
+            className="username-input"
+            disabled={loading}
+          />
+          <p className="input-hint">Import the most recent games (1-500)</p>
+        </div>
+
         <button type="submit" className="fetch-button" disabled={loading}>
           {loading ? (
             <>
@@ -79,7 +96,7 @@ function FetchGames() {
           ) : (
             <>
               <Download className="button-icon" size={20} />
-              Fetch All Games
+              Fetch Recent Games
             </>
           )}
         </button>
@@ -115,16 +132,17 @@ function FetchGames() {
         <h2>How it works</h2>
         <ol className="info-list">
           <li>Enter your Chess.com username in the form above</li>
-          <li>Click "Fetch All Games" to start importing</li>
-          <li>The system will fetch all your historical games from Chess.com's public API</li>
+          <li>Set the number of recent games you want to import (default is 20)</li>
+          <li>Click "Fetch Recent Games" to start importing</li>
+          <li>The system will fetch your most recent games from Chess.com's public API</li>
           <li>Games are stored in the database for analysis</li>
           <li>Once complete, visit the Home page to see your statistics</li>
         </ol>
 
         <h2>Note</h2>
         <p className="info-note">
-          This uses Chess.com's public API, which has rate limits. If you have thousands of games,
-          the import may take several minutes. Please be patient and don't refresh the page.
+          This uses Chess.com's public API. The system fetches your most recent games
+          starting from the current month and working backwards until it reaches your requested limit.
         </p>
       </div>
     </div>
