@@ -13,6 +13,9 @@ function App() {
             <Link to="/" className={location.pathname === '/' ? 'active' : ''}>
               Home
             </Link>
+            <Link to="/games" className={location.pathname === '/games' ? 'active' : ''}>
+              Games
+            </Link>
             <Link to="/fetch" className={location.pathname === '/fetch' ? 'active' : ''}>
               Fetch Games
             </Link>
