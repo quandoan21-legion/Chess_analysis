@@ -7,9 +7,16 @@ import AuthModal from './components/AuthModal'
 import UserMenu from './components/UserMenu'
 import { AnalysisData, User } from './types'
 
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY
+
+if (!supabaseUrl || !supabaseAnonKey) {
+  console.error('Missing Supabase environment variables')
+}
+
 const supabase = createClient(
-  import.meta.env.VITE_SUPABASE_URL,
-  import.meta.env.VITE_SUPABASE_ANON_KEY
+  supabaseUrl || '',
+  supabaseAnonKey || ''
 )
 
 function App() {
