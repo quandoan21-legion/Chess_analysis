@@ -1,109 +1,163 @@
-# Chess Improvement Web App
+# Chess Improvement App
 
-AI-powered chess analysis platform that uses Stockfish to analyze your Chess.com games and provide personalized improvement recommendations.
+AI-powered chess analysis platform that analyzes your Chess.com games and provides personalized improvement recommendations with user authentication.
 
 ## Features
 
-- **Stockfish Analysis**: Analyze every move with the powerful Stockfish engine
-- **Pattern Detection**: Identify recurring weaknesses in your play
-- **Personalized Coaching**: Get actionable training recommendations
-- **Beautiful UI**: Modern dark-mode dashboard with glassmorphism design
-- **Real-time Progress**: Track analysis progress in real-time
-- **Detailed Insights**: Game-by-game breakdown with accuracy metrics
+- **User Authentication**: Secure login and registration with Supabase Auth
+- **Chess.com Integration**: Fetch and analyze your recent games
+- **Stockfish Analysis**: Deep chess engine analysis of every move
+- **Pattern Detection**: Identify recurring weaknesses in your gameplay
+- **Personalized Training**: Get actionable recommendations based on your weaknesses
+- **Game Statistics**: Track your performance across multiple games
+- **Modern UI**: Clean, responsive design with dark theme
 
 ## Tech Stack
 
-### Frontend
-- React + TypeScript
-- Tailwind CSS
+**Frontend**
+- React 18 + TypeScript
 - Vite
-- Lucide Icons
+- Tailwind CSS
+- Supabase Client
+- Chess.com Public API
 
-### Backend
+**Backend**
+- Python 3.9+
 - FastAPI
 - python-chess
 - Stockfish engine
-- httpx
+- Supabase Python Client
 
-### Database
+**Database**
 - Supabase (PostgreSQL)
 
-## Setup Instructions
+## Quick Start
 
-### Prerequisites
-- Node.js 18+
-- Python 3.9+
-- Stockfish engine
+### 1. Install Dependencies
 
-### Frontend Setup
-
-1. Install dependencies:
 ```bash
 npm install
 ```
 
-2. Start development server:
+### 2. Install Python Backend Dependencies
+
+```bash
+pip install -r requirements.txt
+```
+
+### 3. Install Stockfish Engine
+
+**macOS:**
+```bash
+brew install stockfish
+```
+
+**Ubuntu/Debian:**
+```bash
+sudo apt-get install stockfish
+```
+
+**Windows:**
+Download from [stockfishchess.org](https://stockfishchess.org/download/)
+
+### 4. Start the Backend Server
+
+```bash
+python backend/main.py
+```
+
+The backend API will run on `http://localhost:8000`
+
+### 5. Start the Frontend Development Server
+
+In a new terminal:
+
 ```bash
 npm run dev
 ```
 
-### Backend Setup
+The app will be available at `http://localhost:5173`
 
-1. Install Python dependencies:
-```bash
-cd backend
-pip install -r requirements.txt
-```
+## How to Use
 
-2. Install Stockfish:
-   - **macOS**: `brew install stockfish`
-   - **Ubuntu**: `apt-get install stockfish`
-   - **Windows**: Download from https://stockfishchess.org/download/
+1. **Create an Account**: Click "Sign In" and create a new account
+2. **Enter Username**: Enter your Chess.com username
+3. **Select Games**: Choose how many recent games to analyze (1-50)
+4. **Configure Analysis**: Set the Stockfish depth (higher = more accurate but slower)
+5. **Analyze**: Click "Analyze Games" and wait for results
+6. **Review**: View your weaknesses, game statistics, and personalized training plan
 
-3. Run the API server:
-```bash
-python main.py
-```
+## Analysis Features
 
-The backend will run on http://localhost:8000
+### Weakness Categories
 
-## Usage
+- **Opening Weakness**: Errors in the first 10 moves
+- **Tactical Blindness**: Missed tactical opportunities (forks, pins, skewers)
+- **Endgame Weakness**: Poor technique in simplified positions
+- **Positional Weakness**: Gradual position deterioration
+- **Time Pressure**: Errors when time is running low
 
-1. Enter your Chess.com username
-2. Select analysis depth (higher = more accurate but slower)
-3. Choose number of games to analyze
-4. Click "Start Analysis"
-5. Wait for results (typically 2-5 minutes)
-6. Review your weaknesses and training plan
+### Move Quality Classification
 
-## Analysis Categories
-
-### Weakness Detection
-- **Opening Weakness**: Early-game blunders and mistakes
-- **Tactical Blindness**: Missing tactical opportunities
-- **Endgame Weakness**: Poor endgame technique
-- **Positional Weakness**: Gradual evaluation decline
-- **Time Pressure**: Late-game errors
-
-### Move Classification
-- **Good**: < 50 centipawn loss
+- **Good Move**: Less than 50 centipawn loss
 - **Inaccuracy**: 50-99 centipawn loss
 - **Mistake**: 100-299 centipawn loss
-- **Blunder**: ≥ 300 centipawn loss
+- **Blunder**: 300+ centipawn loss
+
+## Project Structure
+
+```
+chess-improvement-app/
+├── src/
+│   ├── components/         # React components
+│   ├── services/          # API services
+│   └── types.ts           # TypeScript types
+├── backend/
+│   ├── main.py            # FastAPI server
+│   ├── analyzer.py        # Stockfish analysis
+│   ├── chess_client.py    # Chess.com API client
+│   ├── weakness_detector.py # Pattern detection
+│   └── supabase_client.py # Database operations
+├── supabase/
+│   └── migrations/        # Database migrations
+└── package.json
+```
 
 ## Environment Variables
 
-Create a `.env` file with:
+The `.env` file contains:
+
 ```
 VITE_SUPABASE_URL=your_supabase_url
-VITE_SUPABASE_SUPABASE_ANON_KEY=your_supabase_anon_key
+VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
+SUPABASE_URL=your_supabase_url
+SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
 ```
 
-## Build for Production
+## Building for Production
 
 ```bash
 npm run build
 ```
+
+The production build will be created in the `dist/` directory.
+
+## Troubleshooting
+
+**Backend won't start:**
+- Ensure Python 3.9+ is installed
+- Check that Stockfish is installed and in your PATH
+- Verify all Python dependencies are installed
+
+**Frontend errors:**
+- Run `npm install` to ensure all dependencies are installed
+- Clear browser cache and reload
+- Check that backend is running on port 8000
+
+**Analysis fails:**
+- Verify the Chess.com username is correct
+- Ensure the user has played games on Chess.com
+- Check backend logs for Stockfish errors
 
 ## License
 
