@@ -1,6 +1,4 @@
-import ChessWebAPI from 'chess-web-api'
-
-const chessAPI = new ChessWebAPI()
+const CHESS_API_BASE = 'https://api.chess.com/pub'
 
 export interface ChessGame {
   url: string
@@ -25,15 +23,23 @@ export interface MonthlyArchive {
   games: ChessGame[]
 }
 
+const fetchChessAPI = async (endpoint: string) => {
+  const response = await fetch(`${CHESS_API_BASE}${endpoint}`)
+  if (!response.ok) {
+    throw new Error(`Chess.com API error: ${response.statusText}`)
+  }
+  return response.json()
+}
+
 export const fetchRecentGames = async (username: string, limit: number = 10): Promise<ChessGame[]> => {
   try {
-    const archivesResponse = await chessAPI.getPlayerMonthlyArchives(username)
+    const archivesData = await fetchChessAPI(`/player/${username}/games/archives`)
 
-    if (!archivesResponse.body || !archivesResponse.body.archives) {
+    if (!archivesData.archives || archivesData.archives.length === 0) {
       throw new Error('No game archives found')
     }
 
-    const archives = archivesResponse.body.archives
+    const archives = archivesData.archives
     const recentGames: ChessGame[] = []
 
     for (let i = archives.length - 1; i >= 0 && recentGames.length < limit; i--) {
@@ -42,10 +48,10 @@ export const fetchRecentGames = async (username: string, limit: number = 10): Pr
       const year = parseInt(parts[parts.length - 2])
       const month = parseInt(parts[parts.length - 1])
 
-      const gamesResponse = await chessAPI.getPlayerCompleteMonthlyArchives(username, year, month)
+      const gamesData = await fetchChessAPI(`/player/${username}/games/${year}/${month}`)
 
-      if (gamesResponse.body && gamesResponse.body.games) {
-        const games = gamesResponse.body.games
+      if (gamesData.games) {
+        const games = gamesData.games
           .sort((a: ChessGame, b: ChessGame) => b.end_time - a.end_time)
           .slice(0, limit - recentGames.length)
 
@@ -62,8 +68,7 @@ export const fetchRecentGames = async (username: string, limit: number = 10): Pr
 
 export const fetchPlayerProfile = async (username: string) => {
   try {
-    const response = await chessAPI.getPlayer(username)
-    return response.body
+    return await fetchChessAPI(`/player/${username}`)
   } catch (error) {
     console.error('Error fetching player profile:', error)
     throw error
@@ -72,8 +77,7 @@ export const fetchPlayerProfile = async (username: string) => {
 
 export const fetchPlayerStats = async (username: string) => {
   try {
-    const response = await chessAPI.getPlayerStats(username)
-    return response.body
+    return await fetchChessAPI(`/player/${username}/stats`)
   } catch (error) {
     console.error('Error fetching player stats:', error)
     throw error
