@@ -335,6 +335,20 @@ body {
   color: #64748b;
 }
 
+.error-details {
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  font-family: 'Courier New', monospace;
+  font-size: 0.875rem;
+  background: #f8f9fa;
+  padding: 1rem;
+  border-radius: 4px;
+  margin-top: 0.5rem;
+  overflow-x: auto;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
 .fetch-button {
   width: 100%;
   background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);

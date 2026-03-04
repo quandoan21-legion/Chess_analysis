@@ -36,7 +36,21 @@ function FetchGames() {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || 'Failed to fetch games');
+        let errorMessage = data.error || 'Failed to fetch games';
+
+        if (data.errorLog && data.errorLog.length > 0) {
+          errorMessage += '\n\nError Details:\n' + data.errorLog.join('\n\n');
+        }
+
+        if (data.details) {
+          errorMessage += '\n\nDetails: ' + data.details;
+        }
+
+        if (data.hint) {
+          errorMessage += '\n\nHint: ' + data.hint;
+        }
+
+        throw new Error(errorMessage);
       }
 
       setResult(data);
@@ -107,7 +121,7 @@ function FetchGames() {
           <AlertCircle size={24} />
           <div>
             <h3>Error</h3>
-            <p>{error}</p>
+            <pre className="error-details">{error}</pre>
           </div>
         </div>
       )}
@@ -120,9 +134,6 @@ function FetchGames() {
             <p>{result.message}</p>
             <p className="result-stats">
               Games imported: <strong>{result.gamesImported}</strong>
-              {result.errors > 0 && (
-                <span className="error-count"> | Errors: {result.errors}</span>
-              )}
             </p>
           </div>
         </div>

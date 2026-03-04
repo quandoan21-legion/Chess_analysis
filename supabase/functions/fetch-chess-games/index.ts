@@ -63,9 +63,8 @@ Deno.serve(async (req: Request) => {
     const supabase = createClient(supabaseUrl, supabaseKey);
 
     let gamesImported = 0;
-    let errors = 0;
+    const errorLogs: string[] = [];
 
-    // If year and month are provided, fetch specific month
     if (year && month) {
       const paddedMonth = String(month).padStart(2, "0");
       const archiveUrl = `https://api.chess.com/pub/player/${username}/games/${year}/${paddedMonth}`;
@@ -95,14 +94,28 @@ Deno.serve(async (req: Request) => {
           black_username: game.black.username,
         }));
 
-        // Insert in batches of 100
         for (let i = 0; i < gamesToInsert.length; i += 100) {
           const batch = gamesToInsert.slice(i, i + 100);
           const { error } = await supabase.from("chess_games").insert(batch);
 
           if (error) {
-            console.error("Error inserting batch:", error);
-            errors += batch.length;
+            const errorMsg = `Database error: ${error.message} | Details: ${JSON.stringify(error.details)} | Hint: ${error.hint}`;
+            console.error("Error inserting batch:", errorMsg);
+            errorLogs.push(errorMsg);
+
+            return new Response(
+              JSON.stringify({
+                error: "Import failed due to database error",
+                errorLog: errorLogs,
+                gamesImported,
+                details: error.message,
+                hint: error.hint
+              }),
+              {
+                status: 500,
+                headers: { ...corsHeaders, "Content-Type": "application/json" },
+              }
+            );
           } else {
             gamesImported += batch.length;
           }
@@ -164,8 +177,23 @@ Deno.serve(async (req: Request) => {
             const { error } = await supabase.from("chess_games").insert(batch);
 
             if (error) {
-              console.error("Error inserting batch:", error);
-              errors += batch.length;
+              const errorMsg = `Database error: ${error.message} | Details: ${JSON.stringify(error.details)} | Hint: ${error.hint}`;
+              console.error("Error inserting batch:", errorMsg);
+              errorLogs.push(errorMsg);
+
+              return new Response(
+                JSON.stringify({
+                  error: "Import failed due to database error",
+                  errorLog: errorLogs,
+                  gamesImported,
+                  details: error.message,
+                  hint: error.hint
+                }),
+                {
+                  status: 500,
+                  headers: { ...corsHeaders, "Content-Type": "application/json" },
+                }
+              );
             } else {
               gamesImported += batch.length;
             }
@@ -180,8 +208,7 @@ Deno.serve(async (req: Request) => {
       JSON.stringify({
         success: true,
         gamesImported,
-        errors,
-        message: `Successfully imported ${gamesImported} games${errors > 0 ? ` with ${errors} errors` : ""}`,
+        message: `Successfully imported ${gamesImported} games`,
       }),
       {
         status: 200,
