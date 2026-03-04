@@ -5,7 +5,14 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "postinstall": "echo 'Dependencies installed'"
+  },
+  "overrides": {
+    "react-chessboard": {
+      "react": "^18.2.0",
+      "react-dom": "^18.2.0"
+    }
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.39.0",
