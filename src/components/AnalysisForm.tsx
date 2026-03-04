@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Search, Settings } from 'lucide-react'
 import { AnalysisData } from '../types'
 
@@ -6,10 +6,17 @@ interface AnalysisFormProps {
   onAnalysisComplete: (data: AnalysisData | null) => void
   isLoading: boolean
   setIsLoading: (loading: boolean) => void
+  defaultUsername?: string
 }
 
-export default function AnalysisForm({ onAnalysisComplete, isLoading, setIsLoading }: AnalysisFormProps) {
-  const [username, setUsername] = useState('')
+export default function AnalysisForm({ onAnalysisComplete, isLoading, setIsLoading, defaultUsername }: AnalysisFormProps) {
+  const [username, setUsername] = useState(defaultUsername || '')
+
+  useEffect(() => {
+    if (defaultUsername) {
+      setUsername(defaultUsername)
+    }
+  }, [defaultUsername])
   const [depth, setDepth] = useState(15)
   const [maxGames, setMaxGames] = useState(10)
   const [error, setError] = useState('')

@@ -50,3 +50,17 @@ export interface AnalysisResponse {
   status: string
   message: string
 }
+
+export interface User {
+  id: string
+  email: string
+  chessUsername?: string
+}
+
+export interface UserProfile {
+  id: string
+  chess_com_username: string | null
+  email: string
+  created_at: string
+  updated_at: string
+}
