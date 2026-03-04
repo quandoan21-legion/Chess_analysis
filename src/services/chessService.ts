@@ -1,4 +1,4 @@
-const ChessWebAPI = require('chess-web-api')
+import ChessWebAPI from 'chess-web-api'
 
 const chessAPI = new ChessWebAPI()
 
